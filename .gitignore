@@ -1,0 +1,7 @@
+# Exclude documentation build directories
+**/_build
+**/.obsidian
+*.o
+
+# Exclude MacOS nuisance files
+**/.DS_Store
