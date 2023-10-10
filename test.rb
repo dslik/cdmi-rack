@@ -9,8 +9,16 @@ def lookup_response_code(code)
 		return("OK")
 	end
 
+	if(code == 403)
+		return("Forbidden")
+	end
+
 	if(code == 404)
-		return("NOT FOUND")
+		return("Not Found")
+	end
+
+	if(code == 501)
+		return("Not Implemented")
 	end
 end
 
@@ -104,4 +112,6 @@ end
 
 print "\n"
 
-print JSON.pretty_generate(JSON.parse(response[2][0]))
+if(response[2].count > 0)
+	print response[2][0]
+end

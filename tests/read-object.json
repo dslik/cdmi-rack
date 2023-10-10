@@ -1,0 +1,4 @@
+GET /etc/hosts HTTP/1.1
+Host: cloud.example.com
+Accept: application/cdmi-object
+
