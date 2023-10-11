@@ -164,9 +164,21 @@ class CDMI
 
 		if(mounted_volume_source[mount_path])
 			cdmi_response["metadata"]["import"] = Hash.new()
-			cdmi_response["metadata"]["import"]["source"] = mounted_volume_source[mount_path]
 			cdmi_response["metadata"]["import"]["type"] = mounted_volume_type[mount_path]
+			cdmi_response["metadata"]["import"]["source"] = mounted_volume_source[mount_path]
+		else
+			realpath = File.realpath(request_path)
+			if(realpath.length > 1)
+				realpath = realpath + "/"
+			end
+
+			if(request_path != realpath)
+				cdmi_response["metadata"]["import"] = Hash.new()
+				cdmi_response["metadata"]["import"]["type"] = "local"
+				cdmi_response["metadata"]["import"]["source"] = realpath
+			end
 		end
+
 
 		cdmi_response["metadata"]["cdmi_ctime"] = File.ctime(request_path).utc.iso8601
 		cdmi_response["metadata"]["cdmi_mtime"] = File.mtime(request_path).utc.iso8601
@@ -202,8 +214,10 @@ class CDMI
 
 			response.write JSON.pretty_generate(cdmi_response)
 			response.status = 200
-		rescue
+		rescue Errno::ENOENT => e
 			response.status = 404
+		rescue Errno::EACCES => e
+			response.status = 403
 		end
 
 		return(response.finish)
